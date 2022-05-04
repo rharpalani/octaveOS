@@ -1,0 +1,126 @@
+MP3 Group 18 Bug Log
+
+CHECKPOINT 5
+
+CHECKPOINT 5
+
+Terminal messing up during multiple testprints/hello
+Date: 5/1
+Issue: When we got to the bottom of the terminal, the lines printing testprint or hello would overwrite one another, causing the "391OS>" prompt not to show up or for old outputs to be overwritten. We realized that we instead needed to create a new scroll function specifically for when we echo characters to the screen, rather than using the same scroll function for echoing and writing characters.
+
+Processes not switching with scheduling
+Date: 5/1
+Issue: Although we had scheduler implemented, processes were not actually switching between time slices as intended. We realized we forgot to actually write the code that physically switches the two processes (ie setting the current pid to the next pid).
+
+Shells in multiple terminals not opening
+Date: 4/29
+Issue: After implementing multiple terminals, we tried to start a shell in each one. However, since shell doesn't return, only the first terminal's shell could be started. We realized that instead of starting the shells sequentially and then switching terminals as we had been doing, we should instead use the PIT to initialize each shell. On the first three PIT interrupts, we would start shell, then switch to the next terminal, thus allowing us to start multiple shells for multiple terminals. 
+
+CHECKPOINT 4
+
+Cat executing even with no arguments
+Date: 4/18
+Issue: Cat would execute even if we did not provide the function with any arguments. We realized this was because we were not correctly clearing the arguments in between system calls, which left the old ones in the buffer to be executed. 
+
+Passing value instead of argument
+Date: 4/17
+Issue: Realized that we were accidentally pushing the value 1 instead of the first argument from the C register
+
+File names were wrapping to top if ls was run at bottom of screen
+Date: 4/17
+Issue: Realized we needed to make changes to scrolling to ensure that the buffer was being updated correctly
+
+"ECE391OS> " was being deleted if clicked backspace
+Date: 4/18
+Issue: Realized we needed to check for how many characters were currently in the buffer to backspace correctly
+
+Pagefaulting when calling cat 
+Date: 4/18
+Issue: Realized that we needed to directly pass the size in strcpy instead of trying to use sizeof
+
+Command was being clobbered in sys_execute
+Date: 4/18
+Issue: Realized that we needed to store it in a temp variable in order to parse the arguments correctly
+
+CHECKPOINT 3
+
+Improper inline assembly syntax for context switch
+Date: 4/9
+Issue: When setting up the stack for the context switch before iret in the execute function, we were not pushing the right values onto the stack due to improper syntax and ended up page faulting due to not having the right user code segment and user data segment. After looking at the proper syntax, we fixed the issue by adding "$" signs before the numbers and making sure the inputs that we had corresponded to exactly what we wanted to be pushed onto the stack. 
+
+Not clearing the IF flag correctly
+Date: 4/9
+Issue: When pushing the flags onto the stack for the context switch before iret, we were not clearing the IF flag and ended up have a general protection fault when running our code. So we pushed the flags on the stack and then popped it into a register and then OR'd it by 0x0200 to isolate the 10th bit and make sure it was set. 
+
+Improper set up of STDIO
+Date: 4/10
+Issue: When GDB'ing through our code to figure out why we were page faulting, we realized that we were not setting the proper flag to indicate that the file is open. The set up that I had used was to create an array and then type cast it to the struct that we had created in one of our header files. To fix this issue, we isolated each element in the array and individually set each value in the array to make sure no values were compromised.
+
+Not properly accessing the bits 24-27 in the executable
+Date: 4/10
+Issue: We looking for the value of the entry point to be used later, we attempted to store the value of the entry point by simply adding bytes 24 through 27 together. However, we realized that we needed the individuals bits to be present within the entry point value and not the sum of them. Therefore, we set the initial value of entry point to be 0 and added the bytes to the values of entry point and later shifted it 8 bits to the left to account for the next set of bits to fit.
+
+Gen_sys_call printed to the terminal after overcoming page fault and general protection fault
+Date: 4/11
+Issue: After fixing our issues with page faulting and general protection fault, the terminal displayed the words "gen_sys_call" which was out default text from checkpoint 1 when creating our assembly linkage. To fix this issue and actually link our system calls, we created a header file for our assembly linkage and made sure to reference the new linkage in the linkage that we had in our idt.c file which replaced the default system call linkage that we had from checkpoint 1.
+
+CHECKPOINT 2
+
+Backspace Not Going to Prev Line
+Date: 3/28
+Issue: In terminal, when trying to backspace to go to the previous line, the cursor would not go to that space.
+Solution: We realized that we needed to use a "runon" flag to set whether or not the line was continuing from the previous line. In this case, backspace
+should be allowed to work. However, in the case of pressing enter, we should not be able to backspace to a previous line, so the runon flag will be set to 0.
+This allows it to function as a real terminal. 
+
+RTC Characters Not Printing
+Date: 3/28
+Issue: When trying to create the test case to prove that RTC read and write drivers worked successfully, none of the '1's were printing on the screen. 
+Solution: We realized that we were never clearing the int_flag in rtc_read, causing the function to never leave the while loop and just keep spinning. 
+Once we added a statement in the rtc_handler to set the flag, the interrupts began to show up properly on screen. 
+
+All Files Weren't Showing Onto Screen
+Data: 3/27
+Issue: Not every file from fsdir was being printed onto the screen
+Solution: We realized that we needed to increase the size of the buffer so all files would get added
+
+verylargetextwithverylongname.txt had a weird character at the position of the second "t" in txt
+Date: 3/27
+Issue: The function fread is supposed to read only 32 bits so the last letter was an extra character
+Solution: We had to account for the last character by setting buf[32] (position 33) to 0
+
+Not all of the file contents were getting displayed for read_file_by_name_test
+Date: 3/27
+Issue: Only part of the fish image was showing when trying to open frame1.txt
+Solution: Increased the size of the buffer contents were being stored into 
+
+
+CHECKPOINT 1
+
+Assembly Linkage Not Functioning
+Date: 3/21
+Issue: Our assembly linkage was not functioning correctly, even though we were using the separate macro.
+Solution: We realized that we create a separate header file just for the assembly linkage file, rather than traying to use the same idt.h for 
+everything. This allowed us to separate the macro calls from the regular function calls, making the assembly linkage work correctly.
+
+Gen_Protected_Fault During Keyboard Interrupt
+Date: 3/21
+Issue: Right after pressing a key, the letter would appear but it would also follow up with "Gen_Protected_Fault".
+Solution: When looking at the IDT initialization, we had forgotten to include the size component of it and set it equal to 1. By including that, 
+we were able to successfully input letters from the keyboard on the screen.
+
+Characters Not Echoing to Screen
+Date: 3/21
+Issue: When attempting to print characters for the exceptions, nothing was printing out.
+Solution: We realized that we had to use putc instead of printf to print the characters. 
+
+Spaces Between Each Character on Screen
+Date: 3/22
+Issue: When typing letters on the keyboard, they would print normally but were all followed by a space.
+Solution: To fix this, we included a default case in our switch case structure to handle whether or not a character was actually present.
+
+RTC Handler Not Reached
+Date: 3/22
+Issue: Our RTC handler was not being reached despite correctly initializing the RTC and hard testing with the given test_interrupts function.
+Solution: In our PIC initialization, we kept resetting our master mask and slave mask which would not allow the second interrupt we called to 
+function as intended.
