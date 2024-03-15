@@ -1,5 +1,20 @@
-ACADEMIC INTEGRITY
+octaveOS
 -----
+A Linux-based operating system, with functionality for virtual memory, a filesystem, device drivers, and task switching. Built in C and x86 assembly for Computer Systems Engineering (ECE 391) at UIUC. 
+
+Contributors
+-----
+- Aman Khinvasara
+- Rohan Harpalani
+- Krish Naik Aparaj
+- Atharv Koshti
+
+Academic Integrity
+-----
+In accordance with the terms of the accompanying license, the code within this project is available for use. However, all users, particularly those in academic settings, are required to adhere to their respective institutional policies concerning academic integrity. Users are advised to consult their institution's student code of conduct, as well as the section below, to ensure compliance with such policies.
+
+It is the sole responsibility of each user to ascertain that their use of this code conforms to the standards and requirements set forth by their specific course, department, or academic institution. The author of this project expressly disclaims any and all responsibility for any violations of academic integrity that may occur as a result of individuals using, copying, or otherwise engaging with any portion of this code. Users are hereby notified that they bear full responsibility for ensuring that their use of the project's code does not infringe upon the principles and rules of academic honesty as defined by their educational institution.
+
 Please review the University of Illinois Student Code before starting,
 particularly all subsections of Article 1, Part 4 Academic Integrity and Procedure [here](http://studentcode.illinois.edu/article1_part4_1-401.html).
 
