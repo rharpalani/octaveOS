@@ -1,6 +1,6 @@
 octaveOS
 -----
-A Linux-based operating system, with functionality for virtual memory, a filesystem, device drivers, and task switching. Built in C and x86 assembly for Computer Systems Engineering (ECE 391) at UIUC. 
+A Linux-based operating system, with functionality for virtual memory, a filesystem, device drivers, paging, interrupts & exceptions, and task switching. Built in C and x86 assembly for Computer Systems Engineering (ECE 391) at UIUC. 
 
 Contributors
 -----
